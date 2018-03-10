@@ -2,4 +2,6 @@
 title: "About Me"
 ---
 
-Why I am awesome. 
+- __Name:__ Anyela
+- __Ocupation:__ "Scientist"
+- __Hobbies:__ Rock climbing, reading, crunching data.
