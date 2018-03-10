@@ -113,3 +113,18 @@ plot(subdata)
   int_data <- idw(f, locations = subdata, newdata = data.grid, nmax = 5)
 
 ```
+
+## Plot the new grid
+
+```{r, include=TRUE}
+
+plot(int_data)
+
+r <- raster(int_data)
+```
+
+## Convert to raster and show new grid
+```{r, include=TRUE}
+head(coordinates(r))
+```
+```

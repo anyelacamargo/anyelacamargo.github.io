@@ -281,6 +281,24 @@ plot(subdata)</code></pre>
   int_data &lt;- idw(f, locations = subdata, newdata = data.grid, nmax = 5)</code></pre>
 <pre><code>## [inverse distance weighted interpolation]</code></pre>
 </div>
+<div id="plot-the-new-grid" class="section level2">
+<h2>Plot the new grid</h2>
+<pre class="r"><code>plot(int_data)</code></pre>
+<p><img src="resampling_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre class="r"><code>r &lt;- raster(int_data)</code></pre>
+</div>
+<div id="convert-to-raster-and-show-new-grid" class="section level2">
+<h2>Convert to raster and show new grid</h2>
+<pre class="r"><code>head(coordinates(r))</code></pre>
+<pre><code>##           x  y
+## [1,] -11.00 60
+## [2,] -10.95 60
+## [3,] -10.90 60
+## [4,] -10.85 60
+## [5,] -10.80 60
+## [6,] -10.75 60</code></pre>
+<p>```</p>
+</div>
 
 
 
