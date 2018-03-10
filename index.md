@@ -1,8 +1,8 @@
-## Welcome to GitHub Pages
+## Hello
 
-You can use the [editor on GitHub](https://github.com/anyelacamargo/anyelacamargo.github.io/edit/master/index.md) to maintain and preview the content for your website in Markdown files.
+I am Systems Engineer who happens to like Biology and Economics. I have created this website as a way to share the code I write in R and in Python to do fun things such as web scrapping, data wrangling, data visualisation and most import for data analytics. 
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+Since I'm doing science, I also use this web to share my stories about what is like to do science.
 
 ### Markdown
 
