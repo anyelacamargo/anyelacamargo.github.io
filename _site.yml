@@ -1,10 +1,10 @@
 theme: jekyll-theme-minimal
-#me: "nicks-website"
-#output_dir: "."
-#navbar:
-#title: "Nicks Website"
-#            left:
-#                        - text: "Home"
-#                                href: index.html
-#                                    - text: "About Me"
-#                                            href: about.html
+me: "nicks-website"
+output_dir: "."
+navbar:
+title: "Nicks Website"
+left:
+- text: "Home"
+href: index.html
+- text: "About Me"
+href: about.html
