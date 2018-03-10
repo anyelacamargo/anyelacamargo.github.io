@@ -5,6 +5,6 @@ date: "10 March 2018"
 output: html_document
 ---
 
-## [Re-griding NetCDF data](fitGrowthCurves.html)
+## [Re-griding NetCDF data](resampling.html)
 
 The following examples make use of a NetCDF file of climate data from the Climate Research Unit http://www.cru.uea.ac.uk/data, consisting of long-term mean values (1961-1990) of near-surface air temperature on a 0.5-degree grid (for land points). The dimensions of the array are 720 (longitudes) x 360 (latitudes) x 12 (months). We regrid the resolution to 0.05 and create a new raster.

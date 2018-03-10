@@ -1,5 +1,5 @@
 ---
-title: "regridding"
+title: "resampling"
 author: "AnyelaCamargo"
 date: "10 March 2018"
 output: html_document
