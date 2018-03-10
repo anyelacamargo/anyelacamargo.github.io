@@ -7,6 +7,8 @@ navbar:
       href: index.html
     - text: "Remote Sensing"     ##### the new
       href: remotesensing.html  ##### stuff
+    - text: "Fitting models"
+      href: fittingmodels.html
     - text: "About Me"
       href: about.html
       output:
