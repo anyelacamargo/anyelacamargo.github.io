@@ -1,0 +1,116 @@
+---
+title: "regridding"
+author: "AnyelaCamargo"
+date: "10 March 2018"
+output: html_document
+---
+
+```{r, include=FALSE}
+#knitr::opts_chunk$set(echo = TRUE)
+library('ggplot2')
+library('dismo')
+library('rgdal')
+library('foreign')
+library('sp')
+library('dplyr')
+library('tmap')
+library('ncdf4')
+library('gstat')
+
+```
+The following examples make use of a NetCDF file of climate data from the Climate Research Unit http://www.cru.uea.ac.uk/data, consisting of long-term mean values (1961-1990) of near-surface air temperature on a 0.5-degree grid (for land points). The dimensions of the array are 720 (longitudes) x 360 (latitudes) x 12 (months).
+
+```{r, include=FALSE}
+```
+
+Load nc file and print main settings
+```{r, include=FALSE}
+fname = 'cru10min30_tmp.nc'
+ncin <- nc_open(fname)
+raster(fname) # 
+ncin
+
+plot(raster(fname))
+```
+
+Get lat, lon, time and weather variables
+
+
+```{r, include=FALSE}
+st <- list()
+st$lon <- ncvar_get(ncin,"lon")
+st$lat <- ncvar_get(ncin,"lat")
+st$time <- ncvar_get(ncin, "time")
+st$tunits <- ncatt_get(ncin, "time", "units")
+st$attrib_names <- names(ncin$var)
+st$mnumber = length(time)
+st$tp <- ncvar_get(ncin, st$attrib_names[2]) # get tmp array
+```
+## Convert time values
+Since the initial format of the time variable isn't immediately obvious to everyone, the following is the procedure to change to the dd/hh format.
+
+```{r, include=FALSE}
+# split the time units string into fields
+tustr <- strsplit(st$tunits$value, " ")
+tdstr <- strsplit(unlist(tustr)[3], "-")
+tmonth = as.integer(unlist(tdstr)[2])
+tday = as.integer(unlist(tdstr)[3])
+tyear = as.integer(unlist(tdstr)[1])
+chron(st$time, origin = c(tmonth, tday, tyear))
+  
+```
+
+## Generate grid with original data
+
+Here tmp data corresponding to the first time point st$time[1] (e.g. 27773.5)) will be regrid/resample it to a smaller resolution. First extract subset to regrid.
+
+```{r, include=FALSE}
+ grd <- expand.grid(st$lon, st$lat, st$time)
+    # Set names
+    names(grd) <- c("lon", "lat", "time")
+    # Put the data for qnet in a dataframe
+    vdata <- data.frame(tp = as.numeric(st$tp)) %>% tbl_df()
+    colnames(vdata) = st$attrib_names[2]
+    # Bind with the grid
+    subdata <- grd %>%
+      tbl_df() %>%
+      bind_cols(vdata) %>%
+      filter(time == 27773.5) %>% # select time point 
+      select_("-time") %>%
+      na.omit()
+```
+
+
+
+
+## Convert to raste
+
+```{r, include=FALSE}
+coordinates(subdata) <- ~ lon + lat
+  gridded(subdata) <- TRUE
+  
+plot(subdata)
+```
+
+## Regrid / Interpolate to UK only
+
+```{r, include=FALSE}
+
+  coor_list <- list()
+ 
+  coor_list$lonmin <- -11
+  coor_list$lonmax <- 2
+  coor_list$latmin <- 48 
+  coor_list$latmax <- 60
+  
+  res = 0.05
+  data.grid <- expand.grid(lon = seq(coor_list$lonmin, coor_list$lonmax, res), 
+                           lat = seq(coor_list$latmin, coor_list$latmax, res))
+  coordinates(data.grid) <- ~ lon + lat
+  gridded(data.grid) <- TRUE
+   
+  # IDW interpolation
+  f <- as.formula(paste(st$attrib_name[2], ' ~ 1', sep=''))
+  int_data <- idw(f, locations = subdata, newdata = data.grid, nmax = 5)
+
+```
