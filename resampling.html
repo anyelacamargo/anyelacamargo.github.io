@@ -209,21 +209,77 @@ $(document).ready(function () {
 
 
 <p>The following examples make use of a NetCDF file of climate data from the Climate Research Unit <a href="http://www.cru.uea.ac.uk/data" class="uri">http://www.cru.uea.ac.uk/data</a>, consisting of long-term mean values (1961-1990) of near-surface air temperature on a 0.5-degree grid (for land points). The dimensions of the array are 720 (longitudes) x 360 (latitudes) x 12 (months).</p>
-<p>Load nc file and print main settings</p>
+<div id="load-nc-file-and-print-main-settings" class="section level2">
+<h2>Load nc file and print main settings</h2>
 <p>Get lat, lon, time and weather variables</p>
+<pre class="r"><code>st &lt;- list()
+st$lon &lt;- ncvar_get(ncin,&quot;lon&quot;)
+st$lat &lt;- ncvar_get(ncin,&quot;lat&quot;)
+st$time &lt;- ncvar_get(ncin, &quot;time&quot;)
+st$tunits &lt;- ncatt_get(ncin, &quot;time&quot;, &quot;units&quot;)
+st$attrib_names &lt;- names(ncin$var)
+st$mnumber = length(time)
+st$tp &lt;- ncvar_get(ncin, st$attrib_names[2]) # get tmp array</code></pre>
+</div>
 <div id="convert-time-values" class="section level2">
 <h2>Convert time values</h2>
 <p>Since the initial format of the time variable isn’t immediately obvious to everyone, the following is the procedure to change to the dd/hh format.</p>
+<pre class="r"><code># split the time units string into fields
+tustr &lt;- strsplit(st$tunits$value, &quot; &quot;)
+tdstr &lt;- strsplit(unlist(tustr)[3], &quot;-&quot;)
+tmonth = as.integer(unlist(tdstr)[2])
+tday = as.integer(unlist(tdstr)[3])
+tyear = as.integer(unlist(tdstr)[1])
+chron(st$time, origin = c(tmonth, tday, tyear))</code></pre>
+<pre><code>##  [1] (01/16/76 12:00:00) (02/15/76 12:00:00) (03/16/76 12:00:00)
+##  [4] (04/16/76 00:00:00) (05/16/76 12:00:00) (06/16/76 00:00:00)
+##  [7] (07/16/76 12:00:00) (08/16/76 12:00:00) (09/16/76 00:00:00)
+## [10] (10/16/76 12:00:00) (11/16/76 00:00:00) (12/16/76 12:00:00)</code></pre>
 </div>
 <div id="generate-grid-with-original-data" class="section level2">
 <h2>Generate grid with original data</h2>
 <p>Here tmp data corresponding to the first time point st$time[1] (e.g. 27773.5)) will be regrid/resample it to a smaller resolution. First extract subset to regrid.</p>
+<pre class="r"><code> grd &lt;- expand.grid(st$lon, st$lat, st$time)
+    # Set names
+    names(grd) &lt;- c(&quot;lon&quot;, &quot;lat&quot;, &quot;time&quot;)
+    # Put the data for qnet in a dataframe
+    vdata &lt;- data.frame(tp = as.numeric(st$tp)) %&gt;% tbl_df()
+    colnames(vdata) = st$attrib_names[2]
+    # Bind with the grid
+    subdata &lt;- grd %&gt;%
+      tbl_df() %&gt;%
+      bind_cols(vdata) %&gt;%
+      filter(time == 27773.5) %&gt;% # select time point 
+      select_(&quot;-time&quot;) %&gt;%
+      na.omit()</code></pre>
 </div>
 <div id="convert-to-raste" class="section level2">
 <h2>Convert to raste</h2>
+<pre class="r"><code>coordinates(subdata) &lt;- ~ lon + lat
+  gridded(subdata) &lt;- TRUE
+  
+plot(subdata)</code></pre>
+<p><img src="resampling_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
 <div id="regrid-interpolate-to-uk-only" class="section level2">
 <h2>Regrid / Interpolate to UK only</h2>
+<pre class="r"><code>  coor_list &lt;- list()
+ 
+  coor_list$lonmin &lt;- -11
+  coor_list$lonmax &lt;- 2
+  coor_list$latmin &lt;- 48 
+  coor_list$latmax &lt;- 60
+  
+  res = 0.05
+  data.grid &lt;- expand.grid(lon = seq(coor_list$lonmin, coor_list$lonmax, res), 
+                           lat = seq(coor_list$latmin, coor_list$latmax, res))
+  coordinates(data.grid) &lt;- ~ lon + lat
+  gridded(data.grid) &lt;- TRUE
+   
+  # IDW interpolation
+  f &lt;- as.formula(paste(st$attrib_name[2], &#39; ~ 1&#39;, sep=&#39;&#39;))
+  int_data &lt;- idw(f, locations = subdata, newdata = data.grid, nmax = 5)</code></pre>
+<pre><code>## [inverse distance weighted interpolation]</code></pre>
 </div>
 
 

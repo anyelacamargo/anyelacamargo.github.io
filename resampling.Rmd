@@ -20,10 +20,8 @@ library('gstat')
 ```
 The following examples make use of a NetCDF file of climate data from the Climate Research Unit http://www.cru.uea.ac.uk/data, consisting of long-term mean values (1961-1990) of near-surface air temperature on a 0.5-degree grid (for land points). The dimensions of the array are 720 (longitudes) x 360 (latitudes) x 12 (months).
 
-```{r, include=FALSE}
-```
 
-Load nc file and print main settings
+##Load nc file and print main settings
 ```{r, include=FALSE}
 fname = 'cru10min30_tmp.nc'
 ncin <- nc_open(fname)
@@ -36,7 +34,7 @@ plot(raster(fname))
 Get lat, lon, time and weather variables
 
 
-```{r, include=FALSE}
+```{r, include=TRUE}
 st <- list()
 st$lon <- ncvar_get(ncin,"lon")
 st$lat <- ncvar_get(ncin,"lat")
@@ -46,10 +44,11 @@ st$attrib_names <- names(ncin$var)
 st$mnumber = length(time)
 st$tp <- ncvar_get(ncin, st$attrib_names[2]) # get tmp array
 ```
+
 ## Convert time values
 Since the initial format of the time variable isn't immediately obvious to everyone, the following is the procedure to change to the dd/hh format.
 
-```{r, include=FALSE}
+```{r, include=TRUE}
 # split the time units string into fields
 tustr <- strsplit(st$tunits$value, " ")
 tdstr <- strsplit(unlist(tustr)[3], "-")
@@ -64,7 +63,7 @@ chron(st$time, origin = c(tmonth, tday, tyear))
 
 Here tmp data corresponding to the first time point st$time[1] (e.g. 27773.5)) will be regrid/resample it to a smaller resolution. First extract subset to regrid.
 
-```{r, include=FALSE}
+```{r, include=TRUE}
  grd <- expand.grid(st$lon, st$lat, st$time)
     # Set names
     names(grd) <- c("lon", "lat", "time")
@@ -85,7 +84,7 @@ Here tmp data corresponding to the first time point st$time[1] (e.g. 27773.5)) w
 
 ## Convert to raste
 
-```{r, include=FALSE}
+```{r, include=TRUE}
 coordinates(subdata) <- ~ lon + lat
   gridded(subdata) <- TRUE
   
@@ -94,7 +93,7 @@ plot(subdata)
 
 ## Regrid / Interpolate to UK only
 
-```{r, include=FALSE}
+```{r, include=TRUE}
 
   coor_list <- list()
  
