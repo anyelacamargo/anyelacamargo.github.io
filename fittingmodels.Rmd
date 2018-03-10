@@ -6,6 +6,6 @@ output: html_document
 ---
 ## [Fitting growth curves](fitGrowthCurves.html)
 
-- An RMarkdown presentation on the common mistakes made in visualization and how to fix them.
-- Includes a github repo for access to all the code.
-- Look at how high quality my work is, hire and or collaborate with me. 
+- Fit growth curves Gompertz, logistic y 4-param logistic
+- Data from Paine et. al. Best practice for growth analysis: model implementations and growth rate calculations to foster ecological inference.
+

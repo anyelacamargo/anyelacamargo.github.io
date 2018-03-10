@@ -1,5 +1,5 @@
 ---
-title: Ajustar curvas de crecimiento / Growth curve fitting
+title: Fitting growth curves
 author: ~
 date: '2017-09-19'
 slug: ajustar-curvas-rmd
