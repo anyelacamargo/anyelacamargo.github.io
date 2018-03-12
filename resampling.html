@@ -212,7 +212,9 @@ $(document).ready(function () {
 <p>The idea of the example is to show how weather variables can be interpolated (or extrapolated).</p>
 <div id="load-nc-file-and-print-main-settings" class="section level2">
 <h2>Load nc file and print main settings</h2>
-<p>Get lat, lon, time and weather variables</p>
+</div>
+<div id="get-lat-lon-time-and-weather-variables" class="section level2">
+<h2>Get lat, lon, time and weather variables</h2>
 <pre class="r"><code>st &lt;- list()
 st$lon &lt;- ncvar_get(ncin,&quot;lon&quot;)
 st$lat &lt;- ncvar_get(ncin,&quot;lat&quot;)
@@ -250,8 +252,8 @@ st$tp &lt;- ncvar_get(ncin, st$attrib_names[2]) # get tmp array</code></pre>
       select_(&quot;-time&quot;) %&gt;%
       na.omit()</code></pre>
 </div>
-<div id="convert-to-raste" class="section level2">
-<h2>Convert to raste</h2>
+<div id="convert-to-raster" class="section level2">
+<h2>Convert to raster</h2>
 <pre class="r"><code>coordinates(subdata) &lt;- ~ lon + lat
   gridded(subdata) &lt;- TRUE
   

@@ -32,7 +32,7 @@ ncin
 plot(raster(fname))
 ```
 
-Get lat, lon, time and weather variables
+##Get lat, lon, time and weather variables
 
 
 ```{r, include=TRUE}
@@ -79,7 +79,7 @@ Here tmp data corresponding to the first time point st$time[1] (e.g. 27773.5)) w
 
 
 
-## Convert to raste
+## Convert to raster
 
 ```{r, include=TRUE}
 coordinates(subdata) <- ~ lon + lat
