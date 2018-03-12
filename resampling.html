@@ -209,6 +209,7 @@ $(document).ready(function () {
 
 
 <p>The following examples make use of a NetCDF file of climate data from the Climate Research Unit <a href="http://www.cru.uea.ac.uk/data" class="uri">http://www.cru.uea.ac.uk/data</a>, consisting of long-term mean values (1961-1990) of near-surface air temperature on a 0.5-degree grid (for land points). The dimensions of the array are 720 (longitudes) x 360 (latitudes) x 12 (months).</p>
+<p>The idea of the example is to show how weather variables can be interpolated (or extrapolated).</p>
 <div id="load-nc-file-and-print-main-settings" class="section level2">
 <h2>Load nc file and print main settings</h2>
 <p>Get lat, lon, time and weather variables</p>
@@ -220,21 +221,21 @@ st$tunits &lt;- ncatt_get(ncin, &quot;time&quot;, &quot;units&quot;)
 st$attrib_names &lt;- names(ncin$var)
 st$mnumber = length(time)
 st$tp &lt;- ncvar_get(ncin, st$attrib_names[2]) # get tmp array</code></pre>
-<!-- ## Convert time values -->
-<!-- Since the initial format of the time variable isn't immediately obvious to everyone, the following is the procedure to change to the dd/hh format. -->
-<!-- ```{r, include=TRUE} -->
-<!-- # split the time units string into fields -->
-<!-- tustr <- strsplit(st$tunits$value, " ") -->
-<!-- tdstr <- strsplit(unlist(tustr)[3], "-") -->
-<!-- tmonth = as.integer(unlist(tdstr)[2]) -->
-<!-- tday = as.integer(unlist(tdstr)[3]) -->
-<!-- tyear = as.integer(unlist(tdstr)[1]) -->
-<!-- chron(st$time, origin = c(tmonth, tday, tyear)) -->
-<!-- ``` -->
+</div>
+<div id="convert-time-values" class="section level2">
+<h2>Convert time values</h2>
+<p>The time variable comes in the hour format. To transform it to the yy-mm-dd hh:mm format use the following command:</p>
+<pre class="r"><code>    as.POSIXct(st$time*3600, origin=&#39;1900-01-01 00:00&#39;)</code></pre>
+<pre><code>##  [1] &quot;1903-03-04 05:30:00 GMT&quot; &quot;1903-03-05 11:30:00 GMT&quot;
+##  [3] &quot;1903-03-06 17:30:00 GMT&quot; &quot;1903-03-08 00:00:00 GMT&quot;
+##  [5] &quot;1903-03-09 06:30:00 GMT&quot; &quot;1903-03-10 13:00:00 GMT&quot;
+##  [7] &quot;1903-03-11 19:30:00 GMT&quot; &quot;1903-03-13 02:30:00 GMT&quot;
+##  [9] &quot;1903-03-14 09:00:00 GMT&quot; &quot;1903-03-15 15:30:00 GMT&quot;
+## [11] &quot;1903-03-16 22:00:00 GMT&quot; &quot;1903-03-18 04:30:00 GMT&quot;</code></pre>
 </div>
 <div id="generate-grid-with-original-data" class="section level2">
 <h2>Generate grid with original data</h2>
-<p>Here tmp data corresponding to the first time point st$time[1] (e.g. 27773.5)) will be regrid/resample it to a smaller resolution. First extract subset to regrid.</p>
+<p>Here tmp data corresponding to the first time point st$time[1] (e.g. 27773.5)) will be regrid/resample it to a smaller resolution. First extract subset to regrid. Remember, is just the number of hours since, you’d need to transform it to a different format to make sense of the number.</p>
 <pre class="r"><code> grd &lt;- expand.grid(st$lon, st$lat, st$time)
     # Set names
     names(grd) &lt;- c(&quot;lon&quot;, &quot;lat&quot;, &quot;time&quot;)
@@ -255,7 +256,7 @@ st$tp &lt;- ncvar_get(ncin, st$attrib_names[2]) # get tmp array</code></pre>
   gridded(subdata) &lt;- TRUE
   
 plot(subdata)</code></pre>
-<p><img src="resampling_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="resampling_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
 <div id="regrid-interpolate-to-uk-only" class="section level2">
 <h2>Regrid / Interpolate to UK only</h2>
@@ -277,10 +278,10 @@ plot(subdata)</code></pre>
   int_data &lt;- idw(f, locations = subdata, newdata = data.grid, nmax = 5)</code></pre>
 <pre><code>## [inverse distance weighted interpolation]</code></pre>
 </div>
-<div id="plot-the-new-grid" class="section level2">
-<h2>Plot the new grid</h2>
+<div id="finally-plot-the-new-grid" class="section level2">
+<h2>Finally Plot the new grid</h2>
 <pre class="r"><code>plot(int_data)</code></pre>
-<p><img src="resampling_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="resampling_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <pre class="r"><code>r &lt;- raster(int_data)</code></pre>
 </div>
 <div id="convert-to-raster-and-show-new-grid" class="section level2">
