@@ -220,21 +220,17 @@ st$tunits &lt;- ncatt_get(ncin, &quot;time&quot;, &quot;units&quot;)
 st$attrib_names &lt;- names(ncin$var)
 st$mnumber = length(time)
 st$tp &lt;- ncvar_get(ncin, st$attrib_names[2]) # get tmp array</code></pre>
-</div>
-<div id="convert-time-values" class="section level2">
-<h2>Convert time values</h2>
-<p>Since the initial format of the time variable isn’t immediately obvious to everyone, the following is the procedure to change to the dd/hh format.</p>
-<pre class="r"><code># split the time units string into fields
-tustr &lt;- strsplit(st$tunits$value, &quot; &quot;)
-tdstr &lt;- strsplit(unlist(tustr)[3], &quot;-&quot;)
-tmonth = as.integer(unlist(tdstr)[2])
-tday = as.integer(unlist(tdstr)[3])
-tyear = as.integer(unlist(tdstr)[1])
-chron(st$time, origin = c(tmonth, tday, tyear))</code></pre>
-<pre><code>##  [1] (01/16/76 12:00:00) (02/15/76 12:00:00) (03/16/76 12:00:00)
-##  [4] (04/16/76 00:00:00) (05/16/76 12:00:00) (06/16/76 00:00:00)
-##  [7] (07/16/76 12:00:00) (08/16/76 12:00:00) (09/16/76 00:00:00)
-## [10] (10/16/76 12:00:00) (11/16/76 00:00:00) (12/16/76 12:00:00)</code></pre>
+<!-- ## Convert time values -->
+<!-- Since the initial format of the time variable isn't immediately obvious to everyone, the following is the procedure to change to the dd/hh format. -->
+<!-- ```{r, include=TRUE} -->
+<!-- # split the time units string into fields -->
+<!-- tustr <- strsplit(st$tunits$value, " ") -->
+<!-- tdstr <- strsplit(unlist(tustr)[3], "-") -->
+<!-- tmonth = as.integer(unlist(tdstr)[2]) -->
+<!-- tday = as.integer(unlist(tdstr)[3]) -->
+<!-- tyear = as.integer(unlist(tdstr)[1]) -->
+<!-- chron(st$time, origin = c(tmonth, tday, tyear)) -->
+<!-- ``` -->
 </div>
 <div id="generate-grid-with-original-data" class="section level2">
 <h2>Generate grid with original data</h2>
@@ -259,7 +255,7 @@ chron(st$time, origin = c(tmonth, tday, tyear))</code></pre>
   gridded(subdata) &lt;- TRUE
   
 plot(subdata)</code></pre>
-<p><img src="resampling_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="resampling_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
 <div id="regrid-interpolate-to-uk-only" class="section level2">
 <h2>Regrid / Interpolate to UK only</h2>
@@ -284,7 +280,7 @@ plot(subdata)</code></pre>
 <div id="plot-the-new-grid" class="section level2">
 <h2>Plot the new grid</h2>
 <pre class="r"><code>plot(int_data)</code></pre>
-<p><img src="resampling_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="resampling_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <pre class="r"><code>r &lt;- raster(int_data)</code></pre>
 </div>
 <div id="convert-to-raster-and-show-new-grid" class="section level2">
