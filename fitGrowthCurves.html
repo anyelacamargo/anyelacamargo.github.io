@@ -9,7 +9,7 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="author" content="" />
+<meta name="author" content="AnyelaCamargo" />
 
 <meta name="date" content="2017-09-19" />
 
@@ -202,6 +202,7 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Fitting growth curves</h1>
+<h4 class="author"><em>AnyelaCamargo</em></h4>
 <h4 class="date"><em>2017-09-19</em></h4>
 
 </div>
@@ -301,7 +302,7 @@ fitBimodal = function(sdat, title=NULL, mute=FALSE){
   for(i in names(m)){
     lines(sdat[[&#39;DAS&#39;]], predict(m[[i]]), col=(which(names(m) == i)+2), lwd=2) 
     gof = goodnessoffit(sdat[[trait]], predict(m[[i]]))
-    le &lt;- c(le, sprintf(&quot;%s-: GoF=%s&quot;, i, round(gof, 3)))
+    le &lt;- c(le, sprintf(&quot;%s-: dist=%s&quot;, i, round(gof, 3)))
   }
   legend(&quot;bottomright&quot;, legend=le, lwd=2, col=3:6, bty=&quot;n&quot;, cex=0.8)
 }

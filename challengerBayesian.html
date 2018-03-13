@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="AnyelaCamargo" />
+
+<meta name="date" content="2018-03-11" />
+
+<title>challengerBayesian</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">AnyelaCamargo Website</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="remotesensing.html">Remote Sensing</a>
+</li>
+<li>
+  <a href="fittingmodels.html">Fitting models</a>
+</li>
+<li>
+  <a href="about.html">About Me</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">challengerBayesian</h1>
+<h4 class="author"><em>AnyelaCamargo</em></h4>
+<h4 class="date"><em>11 March 2018</em></h4>
+
+</div>
+
+
+<pre class="r"><code>library(DAAG)
+library(knitr)
+library(plyr)
+library(ggplot2)
+source(&#39;mcm.R&#39;)</code></pre>
+<div id="the-challenger-space-shuttle-disaster" class="section level2">
+<h2>The Challenger Space Shuttle disaster</h2>
+<p>On January 28, 1986, the twenty-fifth flight of the U.S. space shuttle program ended in disaster when one of the rocket boosters of the Shuttle Challenger exploded shortly after lift-off, killing all seven crew members. The presidential commission on the accident concluded that it was caused by the failure of an O-ring in a field joint on the rocket booster, and that this failure was due to a faulty design that made the O-ring unacceptably sensitive to a number of factors including outside temperature.</p>
+<p>The oring dataset is available in the DAAD package under the name ‘orings’.</p>
+<pre class="r"><code>summary(orings)</code></pre>
+<pre><code>##   Temperature       Erosion           Blowby           Total       
+##  Min.   :53.00   Min.   :0.0000   Min.   :0.0000   Min.   :0.0000  
+##  1st Qu.:67.00   1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.0000  
+##  Median :70.00   Median :0.0000   Median :0.0000   Median :0.0000  
+##  Mean   :69.57   Mean   :0.3478   Mean   :0.1739   Mean   :0.4783  
+##  3rd Qu.:75.00   3rd Qu.:0.5000   3rd Qu.:0.0000   3rd Qu.:1.0000  
+##  Max.   :81.00   Max.   :3.0000   Max.   :2.0000   Max.   :5.0000  
+##      Faults      
+##  Min.   :0.0000  
+##  1st Qu.:0.0000  
+##  Median :0.0000  
+##  Mean   :0.3043  
+##  3rd Qu.:1.0000  
+##  Max.   :1.0000</code></pre>
+<p>where Temperature is O-ring temperature for each test firing or actual launch of the shuttle rocket engine. Erosion is the number of erosion incidents. Blowby is the number of blowby incidents and Total is the total number of incidents. We are going to create a new column (Faults), indicanting whether the event on the row has any (1) or none (0) incidents.</p>
+<pre class="r"><code>orings &lt;- mutate(orings, Faults = ifelse(Total &gt; 0, 1, 0))
+#orings$Faults = as.factor(orings$Faults )
+summary(orings)</code></pre>
+<pre><code>##   Temperature       Erosion           Blowby           Total       
+##  Min.   :53.00   Min.   :0.0000   Min.   :0.0000   Min.   :0.0000  
+##  1st Qu.:67.00   1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.0000  
+##  Median :70.00   Median :0.0000   Median :0.0000   Median :0.0000  
+##  Mean   :69.57   Mean   :0.3478   Mean   :0.1739   Mean   :0.4783  
+##  3rd Qu.:75.00   3rd Qu.:0.5000   3rd Qu.:0.0000   3rd Qu.:1.0000  
+##  Max.   :81.00   Max.   :3.0000   Max.   :2.0000   Max.   :5.0000  
+##      Faults      
+##  Min.   :0.0000  
+##  1st Qu.:0.0000  
+##  Median :0.0000  
+##  Mean   :0.3043  
+##  3rd Qu.:1.0000  
+##  Max.   :1.0000</code></pre>
+</div>
+<div id="preliminary-output-from-ml-estimation" class="section level1">
+<h1>Preliminary output from ML estimation</h1>
+<p>For a binary response, Y (Faults), with a predictor variable, X (Temperature), logistic regression is a standard. Specifically, Y, given X = x is modeled as a Bernoulli random variable, with success probability p(x), where p(x) satisfies.</p>
+<p>model.</p>
+<pre><code>p(x) = exp(alpha + beta*x) / (1 + exp(alpha + beta*x))</code></pre>
+<p>where alpha and beta are the unknown values.</p>
+<p>An initial fit of the model on Faults ~ Temperature gives an indication that the probability of O-ring failure increases as the temperature decreases.</p>
+<pre class="r"><code>logreg.out &lt;- glm(Faults ~ Temperature, family=binomial(logit), data = orings)
+summary(logreg.out)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = Faults ~ Temperature, family = binomial(logit), 
+##     data = orings)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.0611  -0.7613  -0.3783   0.4524   2.2175  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)  
+## (Intercept)  15.0429     7.3786   2.039   0.0415 *
+## Temperature  -0.2322     0.1082  -2.145   0.0320 *
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 28.267  on 22  degrees of freedom
+## Residual deviance: 20.315  on 21  degrees of freedom
+## AIC: 24.315
+## 
+## Number of Fisher Scoring iterations: 5</code></pre>
+<p>According to this model beta = -0.2322 (P &lt; 0.05) and alpha = 15.0429 (P &lt; 0.05)</p>
+<pre class="r"><code>pdata &lt;- data.frame(Temperature = seq(min(orings$Temperature), 
+                                      max(orings$Temperature),len=nrow(orings)))
+pdata$Faults = predict(logreg.out, newdata=pdata, type=&quot;response&quot;)
+
+g &lt;- ggplot(orings, aes(x = Temperature))
+g &lt;- g + geom_point(aes(y=Faults), colour=&quot;red&quot;)
+g &lt;- g + geom_line(aes(x = pdata$Temperature, y=pdata$Faults), colour=&quot;green&quot;)
+g</code></pre>
+<p><img src="challengerBayesian_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Extrapolating to lower temperatures (&gt; 30) indicates that a failure is more likely to happen.</p>
+<pre class="r"><code>predict(logreg.out, newdata=data.frame(Temperature = c(20:35)), type=&quot;response&quot;)</code></pre>
+<pre><code>##         1         2         3         4         5         6         7 
+## 0.9999696 0.9999616 0.9999516 0.9999389 0.9999230 0.9999028 0.9998774 
+##         8         9        10        11        12        13        14 
+## 0.9998454 0.9998050 0.9997541 0.9996898 0.9996088 0.9995066 0.9993777 
+##        15        16 
+## 0.9992153 0.9990104</code></pre>
+<p>We know use a Bayesian approach with a Metropolis-Hastings sampler to investigate the likelihood of the alpha and beta values we inferred from our logistic model.</p>
+<p>To start off we use alpha and beta from our initial regression model.</p>
+<pre class="r"><code>a.mle &lt;- as.numeric(logreg.out$coefficients[1])
+b.mle &lt;- as.numeric(logreg.out$coefficients[2])
+var.a.mle &lt;- summary(logreg.out)$cov.scaled[1, 1]
+var.b.mle &lt;- summary(logreg.out)$cov.scaled[2, 2]
+b.mme &lt;- exp(a.mle + 0.577216)</code></pre>
+<p>Now we run the sample a N number of times and extract alpha and beta for each run.</p>
+<pre class="r"><code># Posterior distribution
+
+N &lt;- 5000
+B &lt;- 500
+
+x0 &lt;- c(a.mle, b.mle)
+sampler.out &lt;- mh(x0, dpost, dprop, rprop, N, B) 
+alpha.sampler &lt;- sampler.out$x[,1]
+beta.sampler &lt;-sampler.out$x[,2]</code></pre>
+<div id="alpha" class="section level2">
+<h2>Alpha</h2>
+<p>Now we plot alpha and beta to look at their distribution. Note that alpha mean falls between [15 : 16]</p>
+<pre class="r"><code>hist(alpha.sampler, freq=FALSE, col=&quot;gray&quot;, border=&quot;white&quot;, xlab=expression(alpha))</code></pre>
+<p><img src="challengerBayesian_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<pre class="r"><code>  ggplot() + geom_line(aes(x= 1:N, y=alpha.sampler), color = &#39;green&#39;) + 
+    geom_line(aes(x= 1:N, y=cumsum(alpha.sampler) / (1:N)))</code></pre>
+<p><img src="challengerBayesian_files/figure-html/unnamed-chunk-9-2.png" width="672" /></p>
+</div>
+<div id="beta" class="section level2">
+<h2>Beta</h2>
+<p>and beta means falls between [-0.25 : -0.20]</p>
+<pre class="r"><code>  hist(beta.sampler, freq=FALSE, col=&quot;gray&quot;, border=&quot;white&quot;, xlab=expression(beta))</code></pre>
+<p><img src="challengerBayesian_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<pre class="r"><code>  ggplot() + geom_line(aes(x= 1:N, y=beta.sampler), color = &#39;green&#39;) + 
+    geom_line(aes(x= 1:N, y=cumsum(beta.sampler) / (1:N)))</code></pre>
+<p><img src="challengerBayesian_files/figure-html/unnamed-chunk-10-2.png" width="672" /></p>
+<p>Finally we want to see what is the probability of o-ring failure as the temperature decreases (~30) and increases (~80).</p>
+<pre class="r"><code>  p80 &lt;- 1 - 1 / (1 + exp(alpha.sampler + beta.sampler * 80))
+  p30 &lt;- 1 - 1 / (1 + exp(alpha.sampler + beta.sampler* 30))
+  hist(p80, freq=FALSE, col=&quot;gray&quot;, border=&quot;white&quot;, xlab=&quot;p(80)&quot;, main=&quot;&quot;)</code></pre>
+<p><img src="challengerBayesian_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<pre class="r"><code>  hist(p30, freq=FALSE, col=&quot;gray&quot;, border=&quot;white&quot;, xlab=&quot;p(30)&quot;, main=&quot;&quot;)</code></pre>
+<p><img src="challengerBayesian_files/figure-html/unnamed-chunk-11-2.png" width="672" /></p>
+<p>Looking at the histograms we can conclude that the probability of o-ring failure increases as the temperature decreases. This is indicated by skewness of the histograms, P80 towards the right and P30 towards the left.</p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
