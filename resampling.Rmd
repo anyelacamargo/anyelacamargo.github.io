@@ -20,6 +20,7 @@ library('gstat')
 ```
 The following examples make use of a NetCDF file of climate data from the Climate Research Unit http://www.cru.uea.ac.uk/data, consisting of long-term mean values (1961-1990) of near-surface air temperature on a 0.5-degree grid (for land points). The dimensions of the array are 720 (longitudes) x 360 (latitudes) x 12 (months).
 
+The idea of the example is to show how weather variables can be interpolated (or extrapolated). 
 
 ##Load nc file and print main settings
 ```{r, include=FALSE}
@@ -31,7 +32,7 @@ ncin
 plot(raster(fname))
 ```
 
-Get lat, lon, time and weather variables
+##Get lat, lon, time and weather variables
 
 
 ```{r, include=TRUE}
@@ -46,22 +47,18 @@ st$tp <- ncvar_get(ncin, st$attrib_names[2]) # get tmp array
 ```
 
 ## Convert time values
-Since the initial format of the time variable isn't immediately obvious to everyone, the following is the procedure to change to the dd/hh format.
+The time variable comes in the hour format. To transform it to the yy-mm-dd hh:mm format use the following command:
+
 
 ```{r, include=TRUE}
-# split the time units string into fields
-tustr <- strsplit(st$tunits$value, " ")
-tdstr <- strsplit(unlist(tustr)[3], "-")
-tmonth = as.integer(unlist(tdstr)[2])
-tday = as.integer(unlist(tdstr)[3])
-tyear = as.integer(unlist(tdstr)[1])
-chron(st$time, origin = c(tmonth, tday, tyear))
-  
+
+    as.POSIXct(st$time*3600, origin='1900-01-01 00:00')
+
 ```
 
 ## Generate grid with original data
 
-Here tmp data corresponding to the first time point st$time[1] (e.g. 27773.5)) will be regrid/resample it to a smaller resolution. First extract subset to regrid.
+Here tmp data corresponding to the first time point st$time[1] (e.g. 27773.5)) will be regrid/resample it to a smaller resolution. First extract subset to regrid. Remember, is just the number of hours since, you'd need to transform it to a different format to make sense of the number. 
 
 ```{r, include=TRUE}
  grd <- expand.grid(st$lon, st$lat, st$time)
@@ -82,7 +79,7 @@ Here tmp data corresponding to the first time point st$time[1] (e.g. 27773.5)) w
 
 
 
-## Convert to raste
+## Convert to raster
 
 ```{r, include=TRUE}
 coordinates(subdata) <- ~ lon + lat
@@ -114,7 +111,7 @@ plot(subdata)
 
 ```
 
-## Plot the new grid
+## Finally Plot the new grid
 
 ```{r, include=TRUE}
 
