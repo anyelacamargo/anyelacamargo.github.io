@@ -1,5 +1,5 @@
 ---
-title: "fitmodels"
+title: "Fitting mathematical / statistical models"
 author: "AnyelaCamargo"
 date: "10 March 2018"
 output: html_document
@@ -8,4 +8,8 @@ output: html_document
 
 - Fit growth curves Gompertz, logistic y 4-param logistic
 - Data from Paine et. al. Best practice for growth analysis: model implementations and growth rate calculations to foster ecological inference.
+ 
+## [Logistic Regression on Markov Chains for Failure detection](challengerBayesian.html)
 
+- We use data logistic regresion to predict the probability of o-ring failure given to temperature.
+- A Metropolis-Hastings is used the maximise the likelyhood of the parameters alpha and beta in the logistic model 

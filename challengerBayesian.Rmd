@@ -1,0 +1,195 @@
+---
+title: "challengerBayesian"
+author: "AnyelaCamargo"
+date: "11 March 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(DAAG)
+library(knitr)
+library(plyr)
+library(ggplot2)
+```
+
+## The Challenger Space Shuttle disaster
+On January 28, 1986, the twenty-fifth flight of the U.S. space shuttle program ended in disaster when one of the rocket boosters of the Shuttle Challenger exploded shortly after lift-off, killing all seven crew members. The presidential commission on the accident concluded that it was caused by the failure of an O-ring in a field joint on the rocket booster, and that this failure was due to a faulty design that made the O-ring unacceptably sensitive to a number of factors including outside temperature.
+
+The oring dataset is available in the DAAD package under the name 'orings'. 
+
+```{r echo = TRUE, results = 'asis'}
+
+summary(orings)
+```
+
+where Temperature is O-ring temperature for each test firing or actual launch of the shuttle rocket engine. Erosion is the number of erosion incidents. Blowby is the number of blowby incidents and Total is the total number of incidents. We are going to create a new column (Faults), indicanting whether the event on the row has any (1) or none (0) incidents.
+
+```{r echo = TRUE, results = 'asis'}
+orings <- mutate(orings, Faults = ifelse(Total > 0, 1, 0))
+#orings$Faults = as.factor(orings$Faults )
+summary(orings)
+
+```
+
+
+# Preliminary output from ML estimation
+
+For a binary response, Y (Faults), with a predictor variable, X (Temperature), logistic regression is a standard. Specifically, Y, given X = x is modeled as a Bernoulli random variable, with
+success probability p(x), where p(x) satisfies.
+
+model. 
+
+    p(x) = exp(alpha + beta*x) / (1 + exp(alpha + beta*x))
+    
+where alpha and beta are the unknown values.
+
+An initial fit of the model on Faults ~ Temperature gives an indication that the probability of O-ring failure increases as the temperature decreases. 
+
+```{r echo = TRUE, results = 'asis'}
+logreg.out <- glm(Faults ~ Temperature, family=binomial(logit), data = orings)
+summary(logreg.out)
+```
+
+According to this model beta =  -0.2322 (P < 0.05) and alpha = 15.0429 (P < 0.05)
+
+
+```{r echo = TRUE, results = 'asis'}
+
+pdata <- data.frame(Temperature = seq(min(orings$Temperature), 
+                                      max(orings$Temperature),len=nrow(orings)))
+pdata$Faults = predict(logreg.out, newdata=pdata, type="response")
+
+g <- ggplot(orings, aes(x = Temperature))
+g <- g + geom_point(aes(y=Faults), colour="red")
+g <- g + geom_line(aes(x = pdata$Temperature, y=pdata$Faults), colour="green")
+g
+
+```
+
+Extrapolating to lower temperatures (> 30) indicates that a failure is more likely to happen. 
+
+```{r echo = TRUE, results = 'asis'}
+predict(logreg.out, newdata=data.frame(Temperature = c(20:35)), type="response")
+
+
+  
+```
+
+We know use a Metropolis-Hastings sampler to maximise the likelihood of alpha and beta
+
+
+
+```{r setup, include=FALSE}
+
+ mh <- function(x0, f, dprop, rprop, N, B) {
+
+
+   x <- matrix(NA, N + B, length(x0))
+   fx <- rep(NA, N + B)
+   x[1,] <- x0
+   fx[1] <- f(x0)
+
+   ct <- 0
+   for(i in 2:(N + B)) {
+     u <- rprop(x[i-1,])
+
+     fu <- f(u)
+     r <- log(fu) + log(dprop(x[i-1,], u)) - log(fx[i-1]) - log(dprop(u, x[i-1,]))
+     R <- min(exp(r), 1)
+
+     if(runif(1) <= R) {
+       ct <- ct + 1
+       x[i,] <- u
+       fx[i] <- fu
+     } else {
+       x[i,] <- x[i-1,]
+       fx[i] <- fx[i-1]
+     }
+
+
+   }
+
+   return(list(x=x[-(1:B),], fx=fx[-(1:B)], rate=ct / (N + B)))
+
+ }
+
+
+ dpost <- function(theta) {
+
+   a <- theta[1]
+   b <- theta[2]
+   p <- 1 - 1 / (1 + exp(a + b * x))
+   lik <- exp(sum(dbinom(y, size=1, prob=p, log=TRUE)))
+   dprior <- exp(a) * exp(-exp(a) / b.mme) / b.mme
+   return(lik * dprior)
+ }
+
+
+ dprop <- function(theta, theta0) {
+
+   a <- theta[1]
+   b <- theta[2]
+   pr1 <- exp(a) * exp(-exp(a) / b.mme) / b.mme
+   pr2 <- dnorm(b, b.mle, sqrt(var.b.mle))
+   return(pr1 * pr2)
+ }
+
+ rprop <- function(theta0) {
+   a <- log(rexp(1, 1 / b.mme))
+   b <- rnorm(1, b.mle, sqrt(var.b.mle))
+   return(c(a, b))
+ }
+
+
+x = orings$Temperature
+y = orings$Faults
+
+```
+
+Initially we used the coefficients (alpha and beta) from our logistic model as our a-priories.
+We then run the sampler N number of times
+
+
+```{r setup, include=FALSE}
+
+a.mle <- as.numeric(logreg.out$coefficients[1])
+b.mle <- as.numeric(logreg.out$coefficients[2])
+var.a.mle <- summary(logreg.out)$cov.scaled[1, 1]
+var.b.mle <- summary(logreg.out)$cov.scaled[2, 2]
+b.mme <- exp(a.mle + 0.577216)
+
+# Posterior distribution
+
+N <- 1000
+B <- 100
+
+x0 <- c(a.mle, b.mle)
+sampler.out <- mh(x0, dpost, dprop, rprop, N, B) 
+alpha.sampler <- sampler.out$x[,1]
+beta.sampler <-sampler.out$x[,2]
+```
+
+And extrac alpha and beta from each run
+
+# ```{r setup, include=TRUE}
+# 
+#  hist(alpha.sampler, freq=FALSE, col="gray", border="white", xlab=expression(alpha))
+#  
+#  ggplot() + geom_line(aes(x= 1:N, y=alpha.sampler), color = 'green') + 
+#    geom_line(aes(x= 1:N, y=cumsum(alpha.sampler) / (1:N)))
+#  
+#  
+#  hist(beta.sampler, freq=FALSE, col="gray", border="white", xlab=expression(beta))
+#  
+#  
+#  ggplot() + geom_line(aes(x= 1:N, y=beta.sampler), color = 'green') + 
+#    geom_line(aes(x= 1:N, y=cumsum(beta.sampler) / (1:N)))
+#  
+#  
+#  p80 <- 1 - 1 / (1 + exp(alpha.sampler + beta.sampler * 80))
+#  p30 <- 1 - 1 / (1 + exp(alpha.sampler + beta.sampler* 30))
+#  hist(p80, freq=FALSE, col="gray", border="white", xlab="p(80)", main="")
+#  hist(p30, freq=FALSE, col="gray", border="white", xlab="p(30)", main="")
+```
+
