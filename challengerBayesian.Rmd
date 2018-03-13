@@ -80,7 +80,7 @@ We know use a Metropolis-Hastings sampler to maximise the likelihood of alpha an
 
 
 
-```{r setup, include=FALSE}
+```{r setup, include=TRUE}
 
  mh <- function(x0, f, dprop, rprop, N, B) {
 
