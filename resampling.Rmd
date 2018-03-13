@@ -3,6 +3,7 @@ title: "resampling"
 author: "AnyelaCamargo"
 date: "10 March 2018"
 output: html_document
+tags: ["GIS", 'ncdf4',  'raster', "Sampling"]
 ---
 
 ```{r, include=FALSE}
@@ -21,8 +22,8 @@ library('gstat')
 The following examples make use of a NetCDF file of climate data from the Climate Research Unit http://www.cru.uea.ac.uk/data, consisting of long-term mean values (1961-1990) of near-surface air temperature on a 0.5-degree grid (for land points). The dimensions of the array are 720 (longitudes) x 360 (latitudes) x 12 (months).
 
 The idea of the example is to show how weather variables can be interpolated (or extrapolated). 
+Load nc file and print main settings
 
-##Load nc file and print main settings
 ```{r, include=FALSE}
 fname = 'cru10min30_tmp.nc'
 ncin <- nc_open(fname)
@@ -32,7 +33,7 @@ ncin
 plot(raster(fname))
 ```
 
-##Get lat, lon, time and weather variables
+Get lat, lon, time and weather variables
 
 
 ```{r, include=TRUE}

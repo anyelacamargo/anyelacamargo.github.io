@@ -209,12 +209,8 @@ $(document).ready(function () {
 
 
 <p>The following examples make use of a NetCDF file of climate data from the Climate Research Unit <a href="http://www.cru.uea.ac.uk/data" class="uri">http://www.cru.uea.ac.uk/data</a>, consisting of long-term mean values (1961-1990) of near-surface air temperature on a 0.5-degree grid (for land points). The dimensions of the array are 720 (longitudes) x 360 (latitudes) x 12 (months).</p>
-<p>The idea of the example is to show how weather variables can be interpolated (or extrapolated).</p>
-<div id="load-nc-file-and-print-main-settings" class="section level2">
-<h2>Load nc file and print main settings</h2>
-</div>
-<div id="get-lat-lon-time-and-weather-variables" class="section level2">
-<h2>Get lat, lon, time and weather variables</h2>
+<p>The idea of the example is to show how weather variables can be interpolated (or extrapolated). Load nc file and print main settings</p>
+<p>Get lat, lon, time and weather variables</p>
 <pre class="r"><code>st &lt;- list()
 st$lon &lt;- ncvar_get(ncin,&quot;lon&quot;)
 st$lat &lt;- ncvar_get(ncin,&quot;lat&quot;)
@@ -223,7 +219,6 @@ st$tunits &lt;- ncatt_get(ncin, &quot;time&quot;, &quot;units&quot;)
 st$attrib_names &lt;- names(ncin$var)
 st$mnumber = length(time)
 st$tp &lt;- ncvar_get(ncin, st$attrib_names[2]) # get tmp array</code></pre>
-</div>
 <div id="convert-time-values" class="section level2">
 <h2>Convert time values</h2>
 <p>The time variable comes in the hour format. To transform it to the yy-mm-dd hh:mm format use the following command:</p>
