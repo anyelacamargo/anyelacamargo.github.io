@@ -9,6 +9,8 @@ navbar:
       href: remotesensing.html  ##### stuff
     - text: "Fitting models"
       href: fittingmodels.html
+    - text: "Miscellaneous"
+      href: miscellaneous.html
     - text: "About Me"
       href: about.html
       output:

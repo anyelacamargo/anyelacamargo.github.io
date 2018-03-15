@@ -1,0 +1,47 @@
+---
+title: "Grantsearch"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(rvest)
+library(stringr)
+library(plyr)
+library(dplyr)
+#library(ggvis)
+library(knitr)
+```
+
+## Information
+
+
+
+```{r echo=TRUE, results='asis'}
+call <- read_html("scrapper/bbsrc.html") %>%
+  html_nodes("h3 a") %>%
+  html_text()
+
+# batch_titles <- batches %>%
+#   html_nodes("href") %>%
+#   html_text()
+
+
+url <- read_html("scrapper/bbsrc.html") %>%
+  html_nodes("h3 a") %>%
+  html_attr("href")
+  
+
+date <- read_html("scrapper/bbsrc.html") %>%
+  html_nodes("time") %>%
+  html_text()
+
+
+
+calltable <- data.frame(callname = call, deadline = date, call_url = paste('https://www.bbsrc.ac.uk', url, sep=''))
+
+kable(calltable, padding = 2, caption = 'BBSRC gran calls')
+
+```
+
+

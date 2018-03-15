@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Grantsearch</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">AnyelaCamargo Website</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="remotesensing.html">Remote Sensing</a>
+</li>
+<li>
+  <a href="fittingmodels.html">Fitting models</a>
+</li>
+<li>
+  <a href="miscellaneous.html">Miscellaneous</a>
+</li>
+<li>
+  <a href="about.html">About Me</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Grantsearch</h1>
+
+</div>
+
+
+<div id="information" class="section level2">
+<h2>Information</h2>
+<pre class="r"><code>call &lt;- read_html(&quot;scrapper/bbsrc.html&quot;) %&gt;%
+  html_nodes(&quot;h3 a&quot;) %&gt;%
+  html_text()
+
+# batch_titles &lt;- batches %&gt;%
+#   html_nodes(&quot;href&quot;) %&gt;%
+#   html_text()
+
+
+url &lt;- read_html(&quot;scrapper/bbsrc.html&quot;) %&gt;%
+  html_nodes(&quot;h3 a&quot;) %&gt;%
+  html_attr(&quot;href&quot;)
+  
+
+date &lt;- read_html(&quot;scrapper/bbsrc.html&quot;) %&gt;%
+  html_nodes(&quot;time&quot;) %&gt;%
+  html_text()
+
+
+
+calltable &lt;- data.frame(callname = call, deadline = date, call_url = paste(&#39;https://www.bbsrc.ac.uk&#39;, url, sep=&#39;&#39;))
+
+kable(calltable, padding = 2, caption = &#39;BBSRC gran calls&#39;)</code></pre>
+<table>
+<caption>BBSRC gran calls</caption>
+<thead>
+<tr class="header">
+<th align="left">callname</th>
+<th align="left">deadline</th>
+<th align="left">call_url</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Discovery Fellowships</td>
+<td align="left">9 May 2018, 16:00</td>
+<td align="left"><a href="https://www.bbsrc.ac.uk/funding/filter/discovery-fellowships" class="uri">https://www.bbsrc.ac.uk/funding/filter/discovery-fellowships</a></td>
+</tr>
+<tr class="even">
+<td align="left">David Phillips Fellowships</td>
+<td align="left">9 May 2018, 16:00</td>
+<td align="left"><a href="https://www.bbsrc.ac.uk/funding/filter/david-phillips" class="uri">https://www.bbsrc.ac.uk/funding/filter/david-phillips</a></td>
+</tr>
+<tr class="odd">
+<td align="left">New Investigator Scheme</td>
+<td align="left">24 April 2018, 16:00</td>
+<td align="left"><a href="https://www.bbsrc.ac.uk/funding/filter/new-investigator" class="uri">https://www.bbsrc.ac.uk/funding/filter/new-investigator</a></td>
+</tr>
+<tr class="even">
+<td align="left">BBSRC-Brazil (FAPESP) joint funding of research</td>
+<td align="left">24 April 2018, 16:00</td>
+<td align="left"><a href="https://www.bbsrc.ac.uk/funding/filter/fapesp-joint-funding-research" class="uri">https://www.bbsrc.ac.uk/funding/filter/fapesp-joint-funding-research</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Industrial Partnership Awards (IPA)</td>
+<td align="left">24 April 2018, 16:00</td>
+<td align="left"><a href="https://www.bbsrc.ac.uk/funding/filter/industrial-partnership-awards" class="uri">https://www.bbsrc.ac.uk/funding/filter/industrial-partnership-awards</a></td>
+</tr>
+<tr class="even">
+<td align="left">‘Stand-alone’ LINK</td>
+<td align="left">24 April 2018, 16:00</td>
+<td align="left"><a href="https://www.bbsrc.ac.uk/funding/filter/stand-alone-link" class="uri">https://www.bbsrc.ac.uk/funding/filter/stand-alone-link</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Responsive mode application deadlines</td>
+<td align="left">24 April 2018, 16:00</td>
+<td align="left"><a href="https://www.bbsrc.ac.uk/funding/apply/deadlines" class="uri">https://www.bbsrc.ac.uk/funding/apply/deadlines</a></td>
+</tr>
+<tr class="even">
+<td align="left">Machine Learning to Generate New Biological Understanding 2018</td>
+<td align="left">24 April 2018, 16:00</td>
+<td align="left"><a href="https://www.bbsrc.ac.uk/funding/filter/machine-learning-to-generate-new-biological-understanding-2018" class="uri">https://www.bbsrc.ac.uk/funding/filter/machine-learning-to-generate-new-biological-understanding-2018</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Enterprise Fellowships</td>
+<td align="left">16 April 2018, 16:00</td>
+<td align="left"><a href="https://www.bbsrc.ac.uk/funding/filter/enterprise-fellowships" class="uri">https://www.bbsrc.ac.uk/funding/filter/enterprise-fellowships</a></td>
+</tr>
+<tr class="even">
+<td align="left">ERA-HDHL Call for Transnational Research Proposals: “Nutrition &amp; the Epigenome”</td>
+<td align="left">12 April 2018, 00:00</td>
+<td align="left"><a href="https://www.bbsrc.ac.uk/funding/filter/era-hdhl-call-for-transnational-research-proposals-nutrition-the-epigenome" class="uri">https://www.bbsrc.ac.uk/funding/filter/era-hdhl-call-for-transnational-research-proposals-nutrition-the-epigenome</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Follow-on Funding call</td>
+<td align="left">11 April 2018, 16:00</td>
+<td align="left"><a href="https://www.bbsrc.ac.uk/funding/filter/follow-on" class="uri">https://www.bbsrc.ac.uk/funding/filter/follow-on</a></td>
+</tr>
+<tr class="even">
+<td align="left">BBSRC-NRF Newton-Utafiti fund call in enhancing ruminant livestock productivity</td>
+<td align="left">10 April 2018, 00:00</td>
+<td align="left"><a href="https://www.bbsrc.ac.uk/funding/filter/bbsrc-nrf-newton-utafiti-fund-call-in-enhancing-ruminant-livestock-productivity" class="uri">https://www.bbsrc.ac.uk/funding/filter/bbsrc-nrf-newton-utafiti-fund-call-in-enhancing-ruminant-livestock-productivity</a></td>
+</tr>
+<tr class="odd">
+<td align="left">UKRI Centres for Doctoral Training in Applications and Implications of Artificial Intelligence</td>
+<td align="left">28 March 2018, 16:00</td>
+<td align="left"><a href="https://www.bbsrc.ac.uk/funding/filter/ukri-centres-doctoral-training-in-artificial-intelligence" class="uri">https://www.bbsrc.ac.uk/funding/filter/ukri-centres-doctoral-training-in-artificial-intelligence</a></td>
+</tr>
+<tr class="even">
+<td align="left">Cross-disciplinary mental health network plus call</td>
+<td align="left">22 March 2018, 16:00</td>
+<td align="left"><a href="https://www.bbsrc.ac.uk/funding/filter/2017-cross-disciplinary-mental-health-network-plus-call" class="uri">https://www.bbsrc.ac.uk/funding/filter/2017-cross-disciplinary-mental-health-network-plus-call</a></td>
+</tr>
+<tr class="odd">
+<td align="left">International Travel Award Scheme (ITAS)</td>
+<td align="left">5 Jan 2018</td>
+<td align="left"><a href="https://www.bbsrc.ac.uk/funding/filter/itas" class="uri">https://www.bbsrc.ac.uk/funding/filter/itas</a></td>
+</tr>
+<tr class="even">
+<td align="left">Knowledge Transfer Partnerships</td>
+<td align="left">- 14 Mar 2018</td>
+<td align="left"><a href="https://www.bbsrc.ac.uk/funding/filter/knowledge-transfer-partnerships" class="uri">https://www.bbsrc.ac.uk/funding/filter/knowledge-transfer-partnerships</a></td>
+</tr>
+<tr class="odd">
+<td align="left">FAPESP Pump-Priming Awards (FAPPA)</td>
+<td align="left">5 Jan 2018</td>
+<td align="left"><a href="https://www.bbsrc.ac.uk/funding/filter/fapesp-pump-priming" class="uri">https://www.bbsrc.ac.uk/funding/filter/fapesp-pump-priming</a></td>
+</tr>
+<tr class="even">
+<td align="left">Professional Internships for PhD Students</td>
+<td align="left">- 19 Feb 2018</td>
+<td align="left"><a href="https://www.bbsrc.ac.uk/funding/filter/professional-internships" class="uri">https://www.bbsrc.ac.uk/funding/filter/professional-internships</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Follow-on Funding Pathfinder call</td>
+<td align="left">15 Nov 2017</td>
+<td align="left"><a href="https://www.bbsrc.ac.uk/funding/filter/follow-on-pathfinder" class="uri">https://www.bbsrc.ac.uk/funding/filter/follow-on-pathfinder</a></td>
+</tr>
+<tr class="even">
+<td align="left">Exploring Innovation Seminars</td>
+<td align="left">- 7 Feb 2018</td>
+<td align="left"><a href="https://www.bbsrc.ac.uk/funding/filter/exploring-innovation-seminars" class="uri">https://www.bbsrc.ac.uk/funding/filter/exploring-innovation-seminars</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Returners to Research Fellowships</td>
+<td align="left"></td>
+<td align="left"><a href="https://www.bbsrc.ac.uk/funding/filter/returners-to-research" class="uri">https://www.bbsrc.ac.uk/funding/filter/returners-to-research</a></td>
+</tr>
+<tr class="even">
+<td align="left">Breakthrough Technologies to Advance Crop Breeding</td>
+<td align="left">- 24 Jan 2018</td>
+<td align="left"><a href="https://www.bbsrc.ac.uk/funding/filter/2017-breakthrough-technologies-to-advance-crop-breeding" class="uri">https://www.bbsrc.ac.uk/funding/filter/2017-breakthrough-technologies-to-advance-crop-breeding</a></td>
+</tr>
+<tr class="odd">
+<td align="left">ECR Policy Lab on the determinants of food choice for healthy and sustainable diets</td>
+<td align="left">17 Nov 2017</td>
+<td align="left"><a href="https://www.bbsrc.ac.uk/funding/filter/2018-ecr-policy-lab-on-the-determinants-of-food-choice-for-healthy-and-sustainable-diets" class="uri">https://www.bbsrc.ac.uk/funding/filter/2018-ecr-policy-lab-on-the-determinants-of-food-choice-for-healthy-and-sustainable-diets</a></td>
+</tr>
+<tr class="even">
+<td align="left">Innovator of the Year</td>
+<td align="left">- 23 Jan 2018</td>
+<td align="left"><a href="https://www.bbsrc.ac.uk/funding/filter/innovator-of-the-year" class="uri">https://www.bbsrc.ac.uk/funding/filter/innovator-of-the-year</a></td>
+</tr>
+<tr class="odd">
+<td align="left">BBSRC NIBB Phase II</td>
+<td align="left">9 Oct 2017</td>
+<td align="left"><a href="https://www.bbsrc.ac.uk/funding/filter/networks-in-industrial-biotechnology-bioenergy-phase2" class="uri">https://www.bbsrc.ac.uk/funding/filter/networks-in-industrial-biotechnology-bioenergy-phase2</a></td>
+</tr>
+<tr class="even">
+<td align="left">BBSRC/NERC Joint Call in Aquaculture: Collaborative Research and Innovation</td>
+<td align="left">- 17 Jan 2018</td>
+<td align="left"><a href="https://www.bbsrc.ac.uk/funding/filter/uk-aquaculture-collaborative-projects" class="uri">https://www.bbsrc.ac.uk/funding/filter/uk-aquaculture-collaborative-projects</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Annual focus for responsive mode proposals under the welfare of managed animals priority</td>
+<td align="left">14 Jul 2017</td>
+<td align="left"><a href="https://www.bbsrc.ac.uk/funding/filter/2018-welfare-of-managed-animals1" class="uri">https://www.bbsrc.ac.uk/funding/filter/2018-welfare-of-managed-animals1</a></td>
+</tr>
+<tr class="even">
+<td align="left">New approaches to ageing research: a joint BBSRC-NC3Rs funding highlight notice</td>
+<td align="left">- 17 Jan 2018</td>
+<td align="left"><a href="https://www.bbsrc.ac.uk/funding/filter/2017-new-approaches-to-ageing-research" class="uri">https://www.bbsrc.ac.uk/funding/filter/2017-new-approaches-to-ageing-research</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

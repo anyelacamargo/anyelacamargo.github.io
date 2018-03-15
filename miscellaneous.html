@@ -9,11 +9,11 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="author" content="AnyelaCamargo" />
+<meta name="author" content="Anyela Camargo" />
 
-<meta name="date" content="2017-09-19" />
+<meta name="date" content="2018-03-10" />
 
-<title>Fitting growth curves</title>
+<title>Miscellaneous</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -204,114 +204,15 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Fitting growth curves</h1>
-<h4 class="author"><em>AnyelaCamargo</em></h4>
-<h4 class="date"><em>2017-09-19</em></h4>
+<h1 class="title toc-ignore">Miscellaneous</h1>
+<h4 class="author"><em>Anyela Camargo</em></h4>
+<h4 class="date"><em>10 March 2018</em></h4>
 
 </div>
 
 
-<p>En este post presento el proceso para ajustar y analizar patrones de crecimiento usando curvas de Gompertz, logistic y 4-parametros logistica, potencia y exponenciales. La recoleccion de datos implica medir la tasa de crecimiento en funcion del tamano. Esto es util porque las tasas de crecimiento en muchos tamanos diferentes se pueden medir al mismo tiempo, lo que elimina el efecto del cambio ambiental del patron de crecimiento observado. La tecnica particular presentada aqui produce estimaciones de la varianza de los parametros de la curva para que las curvas de crecimiento de diferentes poblaciones puedan ser comparadas.</p>
-<div id="los-datos" class="section level2">
-<h2>Los datos</h2>
-<p>Para este ejemplo voy a utilizar los datos proporcionados por Paine et al “Best practice for growth analysis: model implementations and growth rate calculations to fosterecological inference”</p>
-<p><img src="fitGrowthCurves_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<p>Esta funcion evalua varios tipos de curvas y retorna la distancie entre los datos observados y los predecidos por cada modelo.</p>
-<pre class="r"><code>goodnessoffit = function(dobs, dpred){
-  
-  gof &lt;- 1 - (sum(( dobs - dpred )^2)/
-                    sum((dobs - mean(dobs))^2))
-  
-  return(gof)
-  
-}
-  
-
-#&#39; Fit logist 3 parm model
-#&#39; @param sdat data
-#&#39; @param trait to be tested
-fitLogis = function(sdat, trait){
-  
-  y = as.formula(paste(trait, &#39;~&#39;, &#39;SSlogis(DAS, Asym, xmid, scal)&#39;, sep=&#39;&#39;))
-  tmp.logis  &lt;- getInitial(y, data = sdat)
-  fit.logis  &lt;- nlsLM(y, trace = F, control = list(maxiter=500), data = sdat)
-  return(fit.logis)
- 
-}
-
-
-#&#39; Fit logist 4 parm model
-#&#39; @param sdat data
-#&#39; @param trait to be tested
-fitFpl = function(sdat, trait){
-  
-  y = as.formula(paste(trait, &#39;~&#39;, &#39;SSfpl(DAS, A, B, xmid, scal)&#39;, sep=&#39;&#39;))
-  tmp.fpl  &lt;- getInitial(y, data = sdat)
-  fit.fpl &lt;- nlsLM(y, data = sdat)
-  return(fit.fpl)
-  
-}
-
-fitGomp = function(sdat, trait){
-  
-  y = as.formula(paste(trait, &#39;~&#39;, &#39;SSgompertz(DAS, Asym, b2, b3)&#39;, sep=&#39;&#39;))
-  tmp.gomp &lt;- getInitial(y, data = sdat)
-  fit.gomp &lt;- nlsLM(y, data = sdat)
-  return(fit.gomp)
-  
-}
-
-#&#39; Fit exponential
-#&#39; @param sdat data
-#&#39; @param trait to be tested
-fitExp = function(sdat, trait){
-  
-  t = as.formula(paste(trait, &#39;~&#39;, &#39;DAS&#39;, sep=&#39;&#39;))
-  mod1 &lt;- lm(t, data = sdat)
-  y = as.formula(paste(trait, &#39;~&#39;, &#39;M0*exp(r*DAS)&#39;, sep=&#39;&#39;))
-  fit.exp &lt;- nlsLM(y, data = sdat, start = list(M0 = exp(coef(mod1)[1]), r = coef(mod1)[2]))
-  return(fit.exp)
-}
-
-#&#39; fitBimodal
-#&#39; @param sdat data set
-#&#39; @title plot
-#&#39; @param mute produce a plot (TRUE) or not FALSE
-fitBimodal = function(sdat, title=NULL, mute=FALSE){
-  
-  library(mixtools)
-  response = sdat
-  mixmdl = normalmixEM(response)
-  if(mute == TRUE){
-      plot(mixmdl, which=2, main2=title)
-      lines(density(response), lty=2, lwd=2)
-  }
-  return(mixmdl)
-  
-}</code></pre>
-<p>Ahora analiza las curvas y retorna plots y distancias finales</p>
-<pre class="r"><code>testModels = function(sdat, trait)
-{
-  
-  m = list()
-  m[[&#39;3PLog&#39;]] = fitLogis(sdat, trait)
-  m[[&#39;4PLog&#39;]] = fitFpl(sdat, trait)
-  m[[&#39;Gompz&#39;]] = fitGomp(sdat, trait)
-  m[[&#39;exp&#39;]] = fitExp(sdat, trait)
-  plot(sdat[[&#39;DAS&#39;]], sdat[[trait]], pch=19, col=&quot;grey&quot; , cex.main=1, cex.lab=1.2,
-       main=trait, xlab=&quot;DAS&quot;, ylab=&quot;Observations&quot;)
-  
-  le &lt;- c()
-  for(i in names(m)){
-    lines(sdat[[&#39;DAS&#39;]], predict(m[[i]]), col=(which(names(m) == i)+2), lwd=2) 
-    gof = goodnessoffit(sdat[[trait]], predict(m[[i]]))
-    le &lt;- c(le, sprintf(&quot;%s-: dist=%s&quot;, i, round(gof, 3)))
-  }
-  legend(&quot;bottomright&quot;, legend=le, lwd=2, col=3:6, bty=&quot;n&quot;, cex=0.8)
-}
-
-testModels(dat, &#39;Area&#39;)</code></pre>
-<p><img src="fitGrowthCurves_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<div id="web-scrapping-for-grant-search" class="section level2">
+<h2><a href="grantsearch.html">Web scrapping for grant search</a></h2>
 </div>
 
 
