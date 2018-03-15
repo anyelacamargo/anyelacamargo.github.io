@@ -1,5 +1,5 @@
 ---
-title: "Grantsearch"
+title: "Grant search"
 output: html_document
 ---
 
@@ -13,7 +13,7 @@ library(dplyr)
 library(knitr)
 ```
 
-## Information
+This tiny snippet will tell you how to scrap the web to get you the latest info from BBSRC's grant calls. 
 
 
 
@@ -44,4 +44,33 @@ kable(calltable, padding = 2, caption = 'BBSRC gran calls')
 
 ```
 
+This one brings you the latests from NERC
 
+```{r echo=TRUE, results='asis'}
+batch_s <- read_html("scrapper/nerc.html") %>%
+  html_nodes(".clearfix") 
+
+call <- batch_s %>%
+  html_nodes("h2 a") %>%
+  html_text()
+
+
+date <- batch_s %>%
+   html_nodes(".closingDate") %>%
+     html_text()
+
+
+info <- batch_s %>%
+  html_nodes("h2") %>%
+  html_text()
+
+url <- batch_s %>%
+  html_nodes("h2 a") %>% 
+  html_attr('href')
+
+
+calltable <- data.frame(callname = name, info = info,
+                        call_url = paste('http://www.nerc.ac.uk/funding/application/currentopportunities', 
+                                         url, sep=''))
+kable(calltable, padding = 2, caption = 'BBSRC gran calls')
+```

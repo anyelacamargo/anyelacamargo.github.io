@@ -6,3 +6,6 @@ output: html_document
 ---
 ## [Web scrapping for grant search](grantsearch.html)
 
+This snippet will show you how to scrap data from any given website using two methods.
+The data correspond to grant call announcements from two public websites.
+

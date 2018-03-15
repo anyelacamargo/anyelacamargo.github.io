@@ -11,7 +11,7 @@
 
 
 
-<title>Grantsearch</title>
+<title>Grant search</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -202,13 +202,12 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Grantsearch</h1>
+<h1 class="title toc-ignore">Grant search</h1>
 
 </div>
 
 
-<div id="information" class="section level2">
-<h2>Information</h2>
+<p>This tiny snippet will tell you how to scrap the web to get you the latest info from BBSRC’s grant calls.</p>
 <pre class="r"><code>call &lt;- read_html(&quot;scrapper/bbsrc.html&quot;) %&gt;%
   html_nodes(&quot;h3 a&quot;) %&gt;%
   html_text()
@@ -384,7 +383,95 @@ kable(calltable, padding = 2, caption = &#39;BBSRC gran calls&#39;)</code></pre>
 </tr>
 </tbody>
 </table>
-</div>
+<p>This one brings you the latests from NERC</p>
+<pre class="r"><code>batch_s &lt;- read_html(&quot;scrapper/nerc.html&quot;) %&gt;%
+  html_nodes(&quot;.clearfix&quot;) 
+
+call &lt;- batch_s %&gt;%
+  html_nodes(&quot;h2 a&quot;) %&gt;%
+  html_text()
+
+
+date &lt;- batch_s %&gt;%
+   html_nodes(&quot;.closingDate&quot;) %&gt;%
+     html_text()
+
+
+info &lt;- batch_s %&gt;%
+  html_nodes(&quot;h2&quot;) %&gt;%
+  html_text()
+
+url &lt;- batch_s %&gt;%
+  html_nodes(&quot;h2 a&quot;) %&gt;% 
+  html_attr(&#39;href&#39;)
+
+
+calltable &lt;- data.frame(callname = name, info = info,
+                        call_url = paste(&#39;http://www.nerc.ac.uk/funding/application/currentopportunities&#39;, 
+                                         url, sep=&#39;&#39;))
+kable(calltable, padding = 2, caption = &#39;BBSRC gran calls&#39;)</code></pre>
+<table>
+<caption>BBSRC gran calls</caption>
+<thead>
+<tr class="header">
+<th align="left">callname</th>
+<th align="left">info</th>
+<th align="left">call_url</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Announcement of Opportunity: Scoping group for Earth system plastics</td>
+<td align="left">Announcement of Opportunity: Scoping group for Earth system plastics</td>
+<td align="left"><a href="http://www.nerc.ac.uk/funding/application/currentopportunities/research/funded/news/ao-plastics/" class="uri">http://www.nerc.ac.uk/funding/application/currentopportunities/research/funded/news/ao-plastics/</a></td>
+</tr>
+<tr class="even">
+<td align="left">Announcement of Opportunity: Scoping group for reducing uncertainty in climate sensitivity due to clouds</td>
+<td align="left">Announcement of Opportunity: Scoping group for reducing uncertainty in climate sensitivity due to clouds</td>
+<td align="left"><a href="http://www.nerc.ac.uk/funding/application/currentopportunities/research/funded/news/ao-clouds/" class="uri">http://www.nerc.ac.uk/funding/application/currentopportunities/research/funded/news/ao-clouds/</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Developing NERC’s omics strategy - Community workshop</td>
+<td align="left">Developing NERC’s omics strategy - Community workshop</td>
+<td align="left"><a href="http://www.nerc.ac.uk/funding/application/currentopportunities/research/funded/programmes/omics/news/omicsstrategy/" class="uri">http://www.nerc.ac.uk/funding/application/currentopportunities/research/funded/programmes/omics/news/omicsstrategy/</a></td>
+</tr>
+<tr class="even">
+<td align="left">Why sharing research outcomes is a vital part of environmental science</td>
+<td align="left">Why sharing research outcomes is a vital part of environmental science</td>
+<td align="left"><a href="http://www.nerc.ac.uk/funding/application/currentopportunities/research/funded/news/sharing-research/" class="uri">http://www.nerc.ac.uk/funding/application/currentopportunities/research/funded/news/sharing-research/</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Pre-announcement: Global Partnerships Seedcorn Fund 2018</td>
+<td align="left">Pre-announcement: Global Partnerships Seedcorn Fund 2018</td>
+<td align="left"><a href="http://www.nerc.ac.uk/funding/application/currentopportunities/research/partnerships/international/iof/news/pre-gpsf18/" class="uri">http://www.nerc.ac.uk/funding/application/currentopportunities/research/partnerships/international/iof/news/pre-gpsf18/</a></td>
+</tr>
+<tr class="even">
+<td align="left">Call for Open Knowledge Exchange (KE) Fellowships</td>
+<td align="left">Call for Open Knowledge Exchange (KE) Fellowships</td>
+<td align="left"><a href="http://www.nerc.ac.uk/funding/application/currentopportunities/funding/available/schemes/kefellows/kefellowscall/" class="uri">http://www.nerc.ac.uk/funding/application/currentopportunities/funding/available/schemes/kefellows/kefellowscall/</a></td>
+</tr>
+<tr class="odd">
+<td align="left">NERC 2018 Impact Awards</td>
+<td align="left">NERC 2018 Impact Awards</td>
+<td align="left"><a href="http://www.nerc.ac.uk/funding/application/currentopportunities/latest/events/impact/" class="uri">http://www.nerc.ac.uk/funding/application/currentopportunities/latest/events/impact/</a></td>
+</tr>
+<tr class="even">
+<td align="left">NERC scopes new areas for strategic research</td>
+<td align="left">NERC scopes new areas for strategic research</td>
+<td align="left"><a href="http://www.nerc.ac.uk/funding/application/currentopportunities/research/funded/news/strategic-research-sco/" class="uri">http://www.nerc.ac.uk/funding/application/currentopportunities/research/funded/news/strategic-research-sco/</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Announcement of Opportunity: Wallacea Region - Understanding biodiversity &amp; evolutionary responses to environmental change</td>
+<td align="left">Announcement of Opportunity: Wallacea Region - Understanding biodiversity &amp; evolutionary responses to environmental change</td>
+<td align="left"><a href="http://www.nerc.ac.uk/funding/application/currentopportunities/research/funded/programmes/wallacea-region/news/ao-noi/" class="uri">http://www.nerc.ac.uk/funding/application/currentopportunities/research/funded/programmes/wallacea-region/news/ao-noi/</a></td>
+</tr>
+<tr class="even">
+<td align="left">UKRI Centres for Doctoral Training in artificial intelligence call</td>
+<td align="left">UKRI Centres for Doctoral Training in artificial intelligence call</td>
+<td align="left"><a href="http://www.nerc.ac.uk/funding/application/currentopportunities/funding/available/postgrad/focused/cdt/ukri-2018/" class="uri">http://www.nerc.ac.uk/funding/application/currentopportunities/funding/available/postgrad/focused/cdt/ukri-2018/</a></td>
+</tr>
+</tbody>
+</table>
 
 
 
