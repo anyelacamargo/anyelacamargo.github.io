@@ -227,14 +227,7 @@ source(&#39;mcm.R&#39;)</code></pre>
 ##  Median :70.00   Median :0.0000   Median :0.0000   Median :0.0000  
 ##  Mean   :69.57   Mean   :0.3478   Mean   :0.1739   Mean   :0.4783  
 ##  3rd Qu.:75.00   3rd Qu.:0.5000   3rd Qu.:0.0000   3rd Qu.:1.0000  
-##  Max.   :81.00   Max.   :3.0000   Max.   :2.0000   Max.   :5.0000  
-##      Faults      
-##  Min.   :0.0000  
-##  1st Qu.:0.0000  
-##  Median :0.0000  
-##  Mean   :0.3043  
-##  3rd Qu.:1.0000  
-##  Max.   :1.0000</code></pre>
+##  Max.   :81.00   Max.   :3.0000   Max.   :2.0000   Max.   :5.0000</code></pre>
 <p>where Temperature is O-ring temperature for each test firing or actual launch of the shuttle rocket engine. Erosion is the number of erosion incidents. Blowby is the number of blowby incidents and Total is the total number of incidents. We are going to create a new column (Faults), indicanting whether the event on the row has any (1) or none (0) incidents.</p>
 <pre class="r"><code>orings &lt;- mutate(orings, Faults = ifelse(Total &gt; 0, 1, 0))
 #orings$Faults = as.factor(orings$Faults )

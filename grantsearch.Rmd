@@ -40,7 +40,7 @@ date <- read_html("scrapper/bbsrc.html") %>%
 
 calltable <- data.frame(callname = call, deadline = date, call_url = paste('https://www.bbsrc.ac.uk', url, sep=''))
 
-kable(calltable, padding = 2, caption = 'BBSRC gran calls')
+kable(calltable, padding = 2, caption = 'BBSRC grant calls')
 
 ```
 
@@ -61,7 +61,7 @@ date <- batch_s %>%
 
 
 info <- batch_s %>%
-  html_nodes("h2") %>%
+  html_nodes("p") %>%
   html_text()
 
 url <- batch_s %>%
@@ -69,8 +69,9 @@ url <- batch_s %>%
   html_attr('href')
 
 
-calltable <- data.frame(callname = name, info = info,
+calltable <- data.frame(callname = call, info = info[seq(2, length(info), 2)],
                         call_url = paste('http://www.nerc.ac.uk/funding/application/currentopportunities', 
                                          url, sep=''))
-kable(calltable, padding = 2, caption = 'BBSRC gran calls')
+
+kable(calltable, padding = 2, caption = 'NERC grant calls')
 ```
