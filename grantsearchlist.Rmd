@@ -1,0 +1,77 @@
+---
+title: "Grant calls"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(rvest)
+library(stringr)
+library(plyr)
+library(dplyr)
+#library(ggvis)
+library(knitr)
+```
+
+This tiny snippet will what are the latest from BBSRC's grant calls. 
+
+
+
+```{r echo=FALSE, include=FALSE, results='asis'}
+call <- read_html("scrapper/bbsrc.html") %>%
+  html_nodes("h3 a") %>%
+  html_text()
+
+# batch_titles <- batches %>%
+#   html_nodes("href") %>%
+#   html_text()
+
+
+url <- read_html("scrapper/bbsrc.html") %>%
+  html_nodes("h3 a") %>%
+  html_attr("href")
+  
+
+date <- read_html("scrapper/bbsrc.html") %>%
+  html_nodes("time") %>%
+  html_text()
+
+
+
+calltable <- data.frame(callname = call, deadline = date, call_url = paste('https://www.bbsrc.ac.uk', url, sep=''))
+
+kable(calltable, padding = 2, caption = 'BBSRC grant calls')
+
+```
+
+This one brings you the latests from NERC
+
+```{r echo=FALSE, include=FALSE, results='asis'}
+batch_s <- read_html("scrapper/nerc.html") %>%
+  html_nodes(".clearfix") 
+
+call <- batch_s %>%
+  html_nodes("h2 a") %>%
+  html_text()
+
+
+date <- batch_s %>%
+   html_nodes(".closingDate") %>%
+     html_text()
+
+
+info <- batch_s %>%
+  html_nodes("p") %>%
+  html_text()
+
+url <- batch_s %>%
+  html_nodes("h2 a") %>% 
+  html_attr('href')
+
+
+calltable <- data.frame(callname = call, info = info[seq(2, length(info), 2)],
+                        call_url = paste('http://www.nerc.ac.uk/funding/application/currentopportunities', 
+                                         url, sep=''))
+
+kable(calltable, padding = 2, caption = 'NERC grant calls')
+```

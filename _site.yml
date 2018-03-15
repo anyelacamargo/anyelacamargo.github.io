@@ -11,6 +11,8 @@ navbar:
       href: fittingmodels.html
     - text: "Miscellaneous"
       href: miscellaneous.html
+    - text: "Search opportunities"
+      href: searchopport.html
     - text: "About Me"
       href: about.html
       output:

@@ -1,0 +1,10 @@
+---
+title: "Research opportunities"
+author: "Anyela Camargo"
+date: "10 March 2018"
+output: html_document
+---
+## [Search for grant calls](grantsearchlist.html)
+
+The data correspond to grant call announcements from two public websites, NERC and BBSRC.
+
