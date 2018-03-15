@@ -39,7 +39,9 @@ date <- read_html("scrapper/bbsrc.html") %>%
 
 
 calltable <- data.frame(callname = call, deadline = date, call_url = paste('https://www.bbsrc.ac.uk', url, sep=''))
+```
 
+```{r echo=TRUE, include=FALSE, results='asis'}
 kable(calltable, padding = 2, caption = 'BBSRC grant calls')
 
 ```
