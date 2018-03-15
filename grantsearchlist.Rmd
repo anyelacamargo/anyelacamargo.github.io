@@ -13,7 +13,7 @@ library(dplyr)
 library(knitr)
 ```
 
-This tiny snippet will what are the latest from BBSRC's grant calls. 
+This section snippet will what are the latest from BBSRC's grant calls. 
 
 
 
@@ -41,14 +41,14 @@ date <- read_html("scrapper/bbsrc.html") %>%
 calltable <- data.frame(callname = call, deadline = date, call_url = paste('https://www.bbsrc.ac.uk', url, sep=''))
 ```
 
-```{r echo=TRUE, include=FALSE, results='asis'}
+```{r echo=FALSE, include=TRUE, results='asis'}
 kable(calltable, padding = 2, caption = 'BBSRC grant calls')
 
 ```
 
 This one brings you the latests from NERC
 
-```{r echo=FALSE, include=FALSE, results='asis'}
+```{r echo=FALSE, include=TRUE, results='asis'}
 batch_s <- read_html("scrapper/nerc.html") %>%
   html_nodes(".clearfix") 
 
